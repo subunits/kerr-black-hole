@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.3//EN" "http://www.web3d.org/specifications/x3d-3.3.dtd">
+<X3D profile="Interchange" version="3.3" xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance"
+  xsd:noNamespaceSchemaLocation="http://www.web3d.org/specifications/x3d-3.3.xsd">
+
+  <head>
+    <meta name="title" content="Black Hole — Softened"/>
+    <meta name="description" content="Softened Kerr black hole: feathered disk rings, ambient glow lighting, hazy jets, cool-warm palette"/>
+    <meta name="author" content="Claude / Anthropic"/>
+  </head>
+
+  <Scene>
+
+    <!-- Soft deep-space background — not pure black, slight blue-purple -->
+    <Background skyColor="0.01 0.01 0.04"/>
+
+    <NavigationInfo type='"EXAMINE" "ANY"' speed="2" headlight="FALSE" visibilityLimit="200"/>
+
+    <Viewpoint DEF="OVERVIEW"
+      position="0 6 18"
+      orientation="1 0 0 -0.32"
+      description="Black hole overview — softened"/>
+    <Viewpoint DEF="EQUATORIAL"
+      position="18 0.5 0"
+      orientation="0 1 0 1.5708"
+      description="Equatorial — disk edge-on"/>
+    <Viewpoint DEF="POLAR"
+      position="0 18 0"
+      orientation="1 0 0 -1.5708"
+      description="Polar — jet axis"/>
+
+    <!-- ═══════════════════════════════════════════
+         LIGHTING — soft, layered, no harsh directs
+    ════════════════════════════════════════════ -->
+
+    <!-- Broad warm ambient from disk glow — reduced intensity, larger radius -->
+    <PointLight
+      location="0 0 0"
+      color="1 0.55 0.22"
+      intensity="1.4"
+      radius="40"
+      attenuation="0 0.04 0.01"/>
+
+    <!-- Soft cool ambient fill — simulates scattered ISM light -->
+    <PointLight
+      location="0 8 0"
+      color="0.35 0.5 1"
+      intensity="0.4"
+      radius="40"
+      attenuation="0 0.03 0.01"/>
+
+    <!-- Very gentle directional fill, no hard shadows -->
+    <DirectionalLight direction="-1 0.4 0.7" color="0.6 0.55 0.8" intensity="0.18"/>
+    <DirectionalLight direction="1 -0.3 -0.6" color="0.8 0.65 0.5" intensity="0.12"/>
+
+    <!-- ═══════════════════════════════════════════
+         TIMERS — slowed for languid motion
+    ════════════════════════════════════════════ -->
+    <TimeSensor DEF="DISK_TIMER"  cycleInterval="11"  loop="TRUE"/>
+    <TimeSensor DEF="DISK_TIMER2" cycleInterval="7.5" loop="TRUE"/>
+    <TimeSensor DEF="DISK_TIMER3" cycleInterval="14"  loop="TRUE"/>
+    <TimeSensor DEF="JET_TIMER"   cycleInterval="4.5" loop="TRUE"/>
+
+    <!-- ═══════════════════════════════════════════
+         EVENT HORIZON
+    ════════════════════════════════════════════ -->
+    <Transform>
+      <Shape>
+        <Appearance>
+          <Material
+            diffuseColor="0 0 0"
+            emissiveColor="0 0 0"
+            specularColor="0 0 0"
+            ambientIntensity="0"/>
+        </Appearance>
+        <Sphere radius="1.1"/>
+      </Shape>
+    </Transform>
+
+    <!-- ═══════════════════════════════════════════
+         PHOTON SPHERE — softer, more layers
+    ════════════════════════════════════════════ -->
+    <!-- Outer haze -->
+    <Transform>
+      <Shape>
+        <Appearance>
+          <Material
+            diffuseColor="0.08 0.1 0.22"
+            emissiveColor="0.04 0.06 0.16"
+            transparency="0.78"/>
+        </Appearance>
+        <Sphere radius="2.1"/>
+      </Shape>
+    </Transform>
+    <!-- Inner shell -->
+    <Transform>
+      <Shape>
+        <Appearance>
+          <Material
+            diffuseColor="0.06 0.08 0.18"
+            emissiveColor="0.03 0.05 0.14"
+            transparency="0.68"/>
+        </Appearance>
+        <Sphere radius="1.65"/>
+      </Shape>
+    </Transform>
+
+    <!-- ═══════════════════════════════════════════
+         ISCO RING — softer glow, wider feather
+    ════════════════════════════════════════════ -->
+    <!-- Outer feather -->
+    <Transform rotation="1 0 0 1.5708">
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="1 0.85 0.55" emissiveColor="0.9 0.7 0.35" transparency="0.55"/>
+        </Appearance>
+        <Disk2D outerRadius="1.5" innerRadius="1.2" solid="FALSE"/>
+      </Shape>
+    </Transform>
+    <!-- Core bright band -->
+    <Transform rotation="1 0 0 1.5708">
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="1 0.96 0.78" emissiveColor="1 0.9 0.65" transparency="0.12"/>
+        </Appearance>
+        <Disk2D outerRadius="1.28" innerRadius="1.2" solid="FALSE"/>
+      </Shape>
+    </Transform>
+
+    <!-- ═══════════════════════════════════════════
+         ACCRETION DISK — more rings, overlapping
+         transparencies create feathered edges
+    ════════════════════════════════════════════ -->
+
+    <!-- Ring 1a — innermost bright, fast -->
+    <Transform DEF="RING1">
+      <OrientationInterpolator DEF="OI_R1"
+        key="0 0.25 0.5 0.75 1"
+        keyValue="0 0 1 0, 0 0 1 1.5708, 0 0 1 3.1416, 0 0 1 4.7124, 0 0 1 6.2832"/>
+      <ROUTE fromNode="DISK_TIMER" fromField="fraction_changed" toNode="OI_R1"  toField="set_fraction"/>
+      <ROUTE fromNode="OI_R1"      fromField="value_changed"    toNode="RING1"  toField="set_rotation"/>
+      <Transform rotation="1 0 0 1.5708">
+        <Shape>
+          <Appearance>
+            <Material diffuseColor="1 0.92 0.72" emissiveColor="1 0.82 0.52" transparency="0.05"/>
+          </Appearance>
+          <Disk2D outerRadius="2.0" innerRadius="1.35" solid="FALSE"/>
+        </Shape>
+      </Transform>
+    </Transform>
+
+    <!-- Ring 1b — inner feather overlap, slightly slower -->
+    <Transform DEF="RING1B">
+      <OrientationInterpolator DEF="OI_R1B"
+        key="0 0.25 0.5 0.75 1"
+        keyValue="0 0 1 0, 0 0 1 1.5708, 0 0 1 3.1416, 0 0 1 4.7124, 0 0 1 6.2832"/>
+      <ROUTE fromNode="DISK_TIMER2" fromField="fraction_changed" toNode="OI_R1B" toField="set_fraction"/>
+      <ROUTE fromNode="OI_R1B"      fromField="value_changed"    toNode="RING1B" toField="set_rotation"/>
+      <Transform rotation="1 0 0 1.5708">
+        <Shape>
+          <Appearance>
+            <Material diffuseColor="1 0.75 0.35" emissiveColor="0.95 0.6 0.2" transparency="0.3"/>
+          </Appearance>
+          <Disk2D outerRadius="2.3" innerRadius="1.7" solid="FALSE"/>
+        </Shape>
+      </Transform>
+    </Transform>
+
+    <!-- Ring 2 — orange mid-zone -->
+    <Transform DEF="RING2">
+      <OrientationInterpolator DEF="OI_R2"
+        key="0 0.25 0.5 0.75 1"
+        keyValue="0 0 1 0, 0 0 1 1.5708, 0 0 1 3.1416, 0 0 1 4.7124, 0 0 1 6.2832"/>
+      <ROUTE fromNode="DISK_TIMER2" fromField="fraction_changed" toNode="OI_R2" toField="set_fraction"/>
+      <ROUTE fromNode="OI_R2"       fromField="value_changed"    toNode="RING2" toField="set_rotation"/>
+      <Transform rotation="1 0 0 1.5708">
+        <Shape>
+          <Appearance>
+            <Material diffuseColor="0.95 0.52 0.12" emissiveColor="0.88 0.4 0.06" transparency="0.18"/>
+          </Appearance>
+          <Disk2D outerRadius="3.1" innerRadius="2.0" solid="FALSE"/>
+        </Shape>
+      </Transform>
+    </Transform>
+
+    <!-- Ring 2b — feather between 2 and 3 -->
+    <Transform rotation="1 0 0 1.5708">
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="0.8 0.3 0.06" emissiveColor="0.65 0.22 0.03" transparency="0.42"/>
+        </Appearance>
+        <Disk2D outerRadius="3.5" innerRadius="2.7" solid="FALSE"/>
+      </Shape>
+    </Transform>
+
+    <!-- Ring 3 — warm red, slow -->
+    <Transform DEF="RING3">
+      <OrientationInterpolator DEF="OI_R3"
+        key="0 0.5 1"
+        keyValue="0 0 1 0, 0 0 1 3.1416, 0 0 1 6.2832"/>
+      <ROUTE fromNode="DISK_TIMER3" fromField="fraction_changed" toNode="OI_R3" toField="set_fraction"/>
+      <ROUTE fromNode="OI_R3"       fromField="value_changed"    toNode="RING3" toField="set_rotation"/>
+      <Transform rotation="1 0 0 1.5708">
+        <Shape>
+          <Appearance>
+            <Material diffuseColor="0.7 0.18 0.04" emissiveColor="0.5 0.12 0.02" transparency="0.35"/>
+          </Appearance>
+          <Disk2D outerRadius="4.4" innerRadius="3.1" solid="FALSE"/>
+        </Shape>
+      </Transform>
+    </Transform>
+
+    <!-- Ring 4 — deep burgundy fade -->
+    <Transform rotation="1 0 0 1.5708">
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="0.38 0.07 0.02" emissiveColor="0.22 0.04 0.01" transparency="0.6"/>
+        </Appearance>
+        <Disk2D outerRadius="5.6" innerRadius="4.0" solid="FALSE"/>
+      </Shape>
+    </Transform>
+
+    <!-- Ring 5 — near-invisible outer whisp -->
+    <Transform rotation="1 0 0 1.5708">
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="0.18 0.03 0.01" emissiveColor="0.08 0.015 0.005" transparency="0.82"/>
+        </Appearance>
+        <Disk2D outerRadius="7.2" innerRadius="5.2" solid="FALSE"/>
+      </Shape>
+    </Transform>
+
+    <!-- ═══════════════════════════════════════════
+         JETS — hazy cones, layered transparency
+    ════════════════════════════════════════════ -->
+
+    <!-- Upper jet — outer haze -->
+    <Transform translation="0 4 0">
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="0.3 0.5 0.9" emissiveColor="0.18 0.38 0.82" transparency="0.72"/>
+        </Appearance>
+        <Cone height="7" bottomRadius="0.75" top="FALSE" solid="FALSE"/>
+      </Shape>
+    </Transform>
+    <!-- Upper jet — inner core -->
+    <Transform translation="0 4 0">
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="0.5 0.7 1" emissiveColor="0.38 0.6 1" transparency="0.5"/>
+        </Appearance>
+        <Cone height="7" bottomRadius="0.35" top="FALSE" solid="FALSE"/>
+      </Shape>
+    </Transform>
+
+    <!-- Lower jet — outer haze -->
+    <Transform translation="0 -4 0" rotation="0 0 1 3.1416">
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="0.3 0.5 0.9" emissiveColor="0.18 0.38 0.82" transparency="0.72"/>
+        </Appearance>
+        <Cone height="7" bottomRadius="0.75" top="FALSE" solid="FALSE"/>
+      </Shape>
+    </Transform>
+    <!-- Lower jet — inner core -->
+    <Transform translation="0 -4 0" rotation="0 0 1 3.1416">
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="0.5 0.7 1" emissiveColor="0.38 0.6 1" transparency="0.5"/>
+        </Appearance>
+        <Cone height="7" bottomRadius="0.35" top="FALSE" solid="FALSE"/>
+      </Shape>
+    </Transform>
+
+    <!-- Jet knots — upper, slow drift -->
+    <Transform DEF="KNOT_U1">
+      <PositionInterpolator DEF="PI_KU1" key="0 1" keyValue="0 1.3 0, 0 7.5 0"/>
+      <ROUTE fromNode="JET_TIMER" fromField="fraction_changed" toNode="PI_KU1"  toField="set_fraction"/>
+      <ROUTE fromNode="PI_KU1"    fromField="value_changed"    toNode="KNOT_U1" toField="set_translation"/>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="0.75 0.88 1" emissiveColor="0.62 0.78 1" transparency="0.28"/>
+        </Appearance>
+        <Sphere radius="0.26"/>
+      </Shape>
+    </Transform>
+
+    <Transform DEF="KNOT_U2">
+      <PositionInterpolator DEF="PI_KU2"
+        key="0 0.5 0.5 1"
+        keyValue="0 1.3 0, 0 7.5 0, 0 1.3 0, 0 7.5 0"/>
+      <ROUTE fromNode="JET_TIMER" fromField="fraction_changed" toNode="PI_KU2"  toField="set_fraction"/>
+      <ROUTE fromNode="PI_KU2"    fromField="value_changed"    toNode="KNOT_U2" toField="set_translation"/>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="0.55 0.75 1" emissiveColor="0.42 0.65 1" transparency="0.45"/>
+        </Appearance>
+        <Sphere radius="0.18"/>
+      </Shape>
+    </Transform>
+
+    <!-- Jet knots — lower -->
+    <Transform DEF="KNOT_D1">
+      <PositionInterpolator DEF="PI_KD1" key="0 1" keyValue="0 -1.3 0, 0 -7.5 0"/>
+      <ROUTE fromNode="JET_TIMER" fromField="fraction_changed" toNode="PI_KD1"  toField="set_fraction"/>
+      <ROUTE fromNode="PI_KD1"    fromField="value_changed"    toNode="KNOT_D1" toField="set_translation"/>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="0.75 0.88 1" emissiveColor="0.62 0.78 1" transparency="0.28"/>
+        </Appearance>
+        <Sphere radius="0.26"/>
+      </Shape>
+    </Transform>
+
+    <Transform DEF="KNOT_D2">
+      <PositionInterpolator DEF="PI_KD2"
+        key="0 0.5 0.5 1"
+        keyValue="0 -1.3 0, 0 -7.5 0, 0 -1.3 0, 0 -7.5 0"/>
+      <ROUTE fromNode="JET_TIMER" fromField="fraction_changed" toNode="PI_KD2"  toField="set_fraction"/>
+      <ROUTE fromNode="PI_KD2"    fromField="value_changed"    toNode="KNOT_D2" toField="set_translation"/>
+      <Shape>
+        <Appearance>
+          <Material diffuseColor="0.55 0.75 1" emissiveColor="0.42 0.65 1" transparency="0.45"/>
+        </Appearance>
+        <Sphere radius="0.18"/>
+      </Shape>
+    </Transform>
+
+    <!-- ═══════════════════════════════════════════
+         BACKGROUND STARS — dimmer, more varied
+    ════════════════════════════════════════════ -->
+    <Transform translation="-11 4 -9"><Shape><Appearance><Material emissiveColor="0.85 0.85 0.72"/></Appearance><Sphere radius="0.07"/></Shape></Transform>
+    <Transform translation="9 5 -11"><Shape><Appearance><Material emissiveColor="0.65 0.72 0.88"/></Appearance><Sphere radius="0.06"/></Shape></Transform>
+    <Transform translation="-7 -6 -12"><Shape><Appearance><Material emissiveColor="0.82 0.82 0.85"/></Appearance><Sphere radius="0.05"/></Shape></Transform>
+    <Transform translation="5 -7 -8"><Shape><Appearance><Material emissiveColor="0.75 0.68 0.88"/></Appearance><Sphere radius="0.08"/></Shape></Transform>
+    <Transform translation="2 9 -13"><Shape><Appearance><Material emissiveColor="0.82 0.78 0.62"/></Appearance><Sphere radius="0.06"/></Shape></Transform>
+    <Transform translation="-12 2 -6"><Shape><Appearance><Material emissiveColor="0.6 0.82 0.72"/></Appearance><Sphere radius="0.07"/></Shape></Transform>
+    <Transform translation="11 -3 -9"><Shape><Appearance><Material emissiveColor="0.82 0.82 0.82"/></Appearance><Sphere radius="0.05"/></Shape></Transform>
+    <Transform translation="-4 10 -7"><Shape><Appearance><Material emissiveColor="0.72 0.72 0.88"/></Appearance><Sphere radius="0.06"/></Shape></Transform>
+    <Transform translation="8 7 -12"><Shape><Appearance><Material emissiveColor="0.82 0.65 0.65"/></Appearance><Sphere radius="0.05"/></Shape></Transform>
+    <Transform translation="-9 -8 -10"><Shape><Appearance><Material emissiveColor="0.65 0.82 0.82"/></Appearance><Sphere radius="0.06"/></Shape></Transform>
+    <Transform translation="3 -11 -8"><Shape><Appearance><Material emissiveColor="0.82 0.82 0.75"/></Appearance><Sphere radius="0.04"/></Shape></Transform>
+    <Transform translation="-6 3 -14"><Shape><Appearance><Material emissiveColor="0.72 0.78 0.88"/></Appearance><Sphere radius="0.05"/></Shape></Transform>
+    <Transform translation="13 0 -10"><Shape><Appearance><Material emissiveColor="0.82 0.75 0.65"/></Appearance><Sphere radius="0.06"/></Shape></Transform>
+    <Transform translation="-2 -12 -11"><Shape><Appearance><Material emissiveColor="0.68 0.82 0.68"/></Appearance><Sphere radius="0.05"/></Shape></Transform>
+    <Transform translation="0 -9 -13"><Shape><Appearance><Material emissiveColor="0.8 0.8 0.82"/></Appearance><Sphere radius="0.04"/></Shape></Transform>
+    <Transform translation="-14 -2 -8"><Shape><Appearance><Material emissiveColor="0.78 0.72 0.88"/></Appearance><Sphere radius="0.06"/></Shape></Transform>
+    <Transform translation="6 11 -10"><Shape><Appearance><Material emissiveColor="0.88 0.82 0.68"/></Appearance><Sphere radius="0.05"/></Shape></Transform>
+    <Transform translation="-3 -5 -15"><Shape><Appearance><Material emissiveColor="0.72 0.82 0.88"/></Appearance><Sphere radius="0.04"/></Shape></Transform>
+
+  </Scene>
+</X3D>
