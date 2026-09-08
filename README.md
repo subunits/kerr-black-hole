@@ -89,20 +89,28 @@ Each Boyer-Lindquist coordinate — t(λ), r(λ), θ(λ), φ(λ) — is treated 
 
 ### Chern proxy — symplectic integral Σ ω(pᵢ, pⱼ)
 
-| Signal | Value | Physical meaning |
-|---|---|---|
-| ISCO-θ | 987.6 | Near-sinusoidal polar oscillation, monotone phase accumulation |
-| ISCO-r | 934.6 | Oscillatory radial perturbation, monotone accumulation |
-| ISCO-φ | 512.5 | Azimuthal advance; 2π wrapping causes partial cancellation |
-| ISCO-t | 23.6 | Linear coordinate time; near-collinear lag vectors, near-zero ω |
+| Signal | Chern proxy | vs sine (1037.38) | Physical meaning |
+|---|---|---|---|
+| sine (ref) | 1037.38 | 100% | Pure periodic baseline — ω accumulates without cancellation |
+| ISCO-θ | 987.57 | 95% | Near-sinusoidal polar oscillation, monotone phase |
+| ISCO-r | 934.59 | 90% | Oscillatory radial perturbation, monotone accumulation |
+| ISCO-φ | 512.45 | 49% | Azimuthal advance; 2π wrapping causes partial cancellation |
+| lorenz | 436.26 | 42% | Chaotic Lorenz attractor — partial ω cancellation |
+| ISCO-t | 23.56 | 2% | Linear coordinate time; near-collinear lag vectors, near-zero ω |
 
 ### Curvature dω
 
-All four ISCO coordinates show constant dω ≈ 0.0325 across all triples. The embedding is uniformly curved — not Lagrangian — consistent with a circular geodesic in a curved spacetime. This uniformity is the Kähler signature of orbital regularity.
+All four ISCO coordinates show constant dω ≈ 0.0325 across all triples — uniform to three significant figures. The embedding is uniformly curved (not Lagrangian), consistent with a circular geodesic at fixed r_ISCO in a curved spacetime. For comparison, the Lorenz attractor shows wildly varying dω across triples. The near-constant value here is the Kähler signature of orbital regularity.
 
-### Symplectic matrix
+### Symplectic matrix (ISCO-r, first 4 points)
 
-The ω matrix for ISCO-r shows a uniform phase increment Δω ≈ 0.440 between consecutive time steps. This is the orbital frequency of the ISCO encoded as symplectic phase advance in the complexified lag space.
+    ω(u,v)      t=3      t=4      t=5      t=6
+    t=3         0.000   +0.440   +0.870   +1.278
+    t=4        -0.440    0.000   +0.440   +0.870
+    t=5        -0.870   -0.440    0.000   +0.440
+    t=6        -1.278   -0.870   -0.440    0.000
+
+Uniform increment Δω = 0.440 between consecutive steps — the orbital frequency of the ISCO encoded as symplectic phase advance in C^k.
 
 ### Persistent homology
 
