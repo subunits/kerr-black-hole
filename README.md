@@ -23,10 +23,11 @@ Each Boyer-Lindquist coordinate — t(λ), r(λ), θ(λ), φ(λ) — is treated 
 
     kerr_isco.py            RK4 Kerr geodesic integrator — generates trajectory CSVs
     isco_all.csv            All four coordinates combined (300 samples)
-    isco_r_coord.csv        Radial coordinate r(λ) — input to AVS Ground Tool
-    isco_t_coord.csv        Coordinate time t(λ) — input to AVS Ground Tool
-    isco_theta_coord.csv    Polar angle θ(λ) — input to AVS Ground Tool
-    isco_phi_coord.csv      Azimuthal angle φ(λ) — input to AVS Ground Tool
+    isco_r_coord.csv        Radial coordinate r(λ) — input to Augmented Vector Space Ground Tool
+    isco_t_coord.csv        Coordinate time t(λ) — input to Augmented Vector Space Ground Tool
+    isco_theta_coord.csv    Polar angle θ(λ) — input to Augmented Vector Space Ground Tool
+    isco_phi_coord.csv      Azimuthal angle φ(λ) — input to Augmented Vector Space Ground Tool
+    Main.hs                 Augmented Vector Space Ground Tool — clone from github.com/subunits/avsp
     kahler_isco.hs          AVS Kähler Extension — ISCO signal corpus
     black_hole_soft.x3d     Pure X3D 3.3 scene — softened Kerr black hole (a/M = 0.7)
     README.md               This file
