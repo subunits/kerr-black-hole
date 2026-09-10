@@ -22,13 +22,13 @@ Each Boyer-Lindquist coordinate — t(λ), r(λ), θ(λ), φ(λ) — is treated 
 ## Files
 
     kerr_isco.py            RK4 Kerr geodesic integrator — generates trajectory CSVs
-    kahler_isco.hs          AVS Kähler Extension patched with all four ISCO signals
-    black_hole_soft.x3d     Pure X3D 3.3 scene — softened Kerr black hole (a/M = 0.7)
     isco_all.csv            All four coordinates combined (300 samples)
-    isco_r_coord.csv        Radial coordinate r(λ)
-    isco_t_coord.csv        Coordinate time t(λ)
-    isco_theta_coord.csv    Polar angle θ(λ)
-    isco_phi_coord.csv      Azimuthal angle φ(λ)
+    isco_r_coord.csv        Radial coordinate r(λ) — input to AVS Ground Tool
+    isco_t_coord.csv        Coordinate time t(λ) — input to AVS Ground Tool
+    isco_theta_coord.csv    Polar angle θ(λ) — input to AVS Ground Tool
+    isco_phi_coord.csv      Azimuthal angle φ(λ) — input to AVS Ground Tool
+    kahler_isco.hs          AVS Kähler Extension — ISCO signal corpus
+    black_hole_soft.x3d     Pure X3D 3.3 scene — softened Kerr black hole (a/M = 0.7)
     README.md               This file
 
 ---
@@ -54,28 +54,31 @@ Writes to the current directory:
 
 ---
 
-## Step 2 — AVS ground tool
+## Step 2 — AVS Ground Tool
 
-Clone [avsp](https://github.com/subunits/avsp), compile, and feed each coordinate CSV:
+Clone [avsp](https://github.com/subunits/avsp) and compile:
 
     ghc -O Main.hs -o avsp
+
+Feed each coordinate CSV into the ground tool:
+
     LANG=C.UTF-8 ./avsp isco_r_coord.csv
     LANG=C.UTF-8 ./avsp isco_t_coord.csv
     LANG=C.UTF-8 ./avsp isco_theta_coord.csv
     LANG=C.UTF-8 ./avsp isco_phi_coord.csv
 
-(Clone avsp first, copy `Main.hs` to this directory, then compile.)
+Each run produces kNN search, OLS next-step regression, Shannon entropy per augmented dimension, anomaly detection, and pairwise distance matrices (L2 and cosine) for that coordinate signal. Output also available on [play.haskell.org](https://play.haskell.org) — paste `Main.hs` and run.
 
 ---
 
-## Step 3 — Kähler extension
+## Step 3 — Kähler Extension
 
 Compile and run `kahler_isco.hs` directly from this repo:
 
     ghc -O kahler_isco.hs -o kahler_isco
     LANG=C.UTF-8 ./kahler_isco
 
-All four ISCO coordinates are embedded in `allSignals`. The primary signal `xs` is ISCO-r. Output covers Kähler condition verification, discrete curvature dω, Chern proxy comparison, symplectic form matrix, holomorphic kNN, and Vietoris-Rips persistent homology.
+All four ISCO coordinates are embedded in `allSignals`. The primary signal `xs` is ISCO-r. Output covers Kähler condition verification, discrete curvature dω, Chern proxy comparison, symplectic form matrix, holomorphic kNN, and Vietoris-Rips persistent homology. Also runs on [play.haskell.org](https://play.haskell.org).
 
 ---
 
