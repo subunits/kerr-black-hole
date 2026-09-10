@@ -27,7 +27,7 @@ Each Boyer-Lindquist coordinate — t(λ), r(λ), θ(λ), φ(λ) — is treated 
     isco_t_coord.csv        Coordinate time t(λ) — input to Augmented Vector Space Ground Tool
     isco_theta_coord.csv    Polar angle θ(λ) — input to Augmented Vector Space Ground Tool
     isco_phi_coord.csv      Azimuthal angle φ(λ) — input to Augmented Vector Space Ground Tool
-    Main.hs                 Augmented Vector Space Ground Tool — clone from github.com/subunits/avsp
+    Main.hs                 Augmented Vector Space Ground Tool
     kahler_isco.hs          AVS Kähler Extension — ISCO signal corpus
     black_hole_soft.x3d     Pure X3D 3.3 scene — softened Kerr black hole (a/M = 0.7)
     README.md               This file
